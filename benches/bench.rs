@@ -1,18 +1,30 @@
 #![feature(test)]
 
+//below are LIBSECP256K1-RS extern crates
 extern crate test;
 extern crate secp256k1;
 extern crate secp256k1_test;
 extern crate rand;
 #[macro_use]
 extern crate arrayref;
+//below are THRESHOLD_CRYPTO extern crates
 
+
+//below are LIBSECP256K1-RS uses
 use test::Bencher;
 use secp256k1::{sign, SecretKey, Message, PublicKey, Signature};
 use secp256k1_test::{Secp256k1, Message as SecpMessage};
 use rand::thread_rng;
+//below are THRESHOLD_CRYPTO uses
 
-//below are SIGNING BENCHES
+
+
+//below are THRESHOLD_CRYPTO BENCHES
+
+
+
+
+//below are LIBSECP256K1-RS SIGNING BENCHES
 
 #[bench]
 fn bench_sign_message(b: &mut Bencher) {
@@ -30,7 +42,7 @@ fn bench_sign_message(b: &mut Bencher) {
     });
 }
 
-//below are PUBLIC KEY BENCHES
+//below are LIBSECP256K1-RS PUBLIC KEY BENCHES
 
 #[bench]
 fn bench_public_key_parse(b: &mut Bencher) {
@@ -73,7 +85,7 @@ fn bench_public_key_serialize_compressed(b: &mut Bencher) {
     });
 }
 
-//below are SIGNATURE BENCHES
+//below are LIBSECP256K1-RS SIGNATURE BENCHES
 
 #[bench]
 fn bench_signature_parse(b: &mut Bencher) {

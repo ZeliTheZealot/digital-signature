@@ -7,6 +7,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+#below are LIBSECP256K1-RS dependencies
 libsecp256k1 = "0.2.2"
 rand = { version = "0.4", default-features = false }
 hmac-drbg = "0.1"
@@ -14,8 +15,11 @@ sha2 = "0.6"
 digest = "0.6"
 typenum = "1.9"
 arrayref = "0.3"
+#below are THRESHOLD_CRYPTO dependencies
 
 [dev-dependencies]
+#below are LIBSECP256K1-RS dev-dependencies
 secp256k1-test = "0.7"
 rand = "0.4"
 clear_on_drop = "0.2.3"
+#below are THRESHOLD_CRYPTO dev-dependencies
