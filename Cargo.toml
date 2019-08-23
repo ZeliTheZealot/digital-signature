@@ -29,10 +29,12 @@ rand04_compat = "0.1.1"
 rand_chacha = "0.1.1"
 serde = { version = "1.0.89", features = ["derive"] }
 tiny-keccak = "1.4.2"
+secp256k1-test = "0.7"
+generic-array = "0.13.2"
 
 [dev-dependencies]
 #below are LIBSECP256K1-RS dev-dependencies
-secp256k1-test = "0.7"
+#secp256k1-test = "0.7"
 rand = "0.4"
 clear_on_drop = "0.2.3"
 #below are THRESHOLD_CRYPTO dev-dependencies
