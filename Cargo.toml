@@ -7,7 +7,6 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-#below are LIBSECP256K1-RS dependencies
 libsecp256k1 = "0.2.2"
 rand = { version = "0.4", default-features = false }
 hmac-drbg = "0.1"
@@ -15,32 +14,8 @@ sha2 = "0.6"
 digest = "0.6"
 typenum = "1.9"
 arrayref = "0.3"
-#below are THRESHOLD_CRYPTO dependencies
-threshold_crypto = "0.3.2"
-byteorder = "1.2.7"
-errno = "0.2.4"
-failure = "0.1.5"
-hex_fmt = "0.3.0"
-log = "0.4.6"
-memsec = "0.5.4"
-pairing = { version = "0.14.2", features = ["u128-support"] }
-#rand = "0.6.5" #try to follow LIBSECP256K1-RS 's rand and see if it works
-rand04_compat = "0.1.1"
-rand_chacha = "0.1.1"
-serde = { version = "1.0.89", features = ["derive"] }
-tiny-keccak = "1.4.2"
 secp256k1-test = "0.7"
 generic-array = "0.13.2"
-
-[dev-dependencies]
-#below are LIBSECP256K1-RS dev-dependencies
-#secp256k1-test = "0.7"
-rand = "0.4"
-clear_on_drop = "0.2.3"
-#below are THRESHOLD_CRYPTO dev-dependencies
-bincode = "1.0.1"
-criterion = "0.2.7"
-rand_xorshift = "0.1.1" #try 0.2.0 next
 
 
 
