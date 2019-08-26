@@ -8,7 +8,7 @@ extern crate rand;
 #[macro_use]
 extern crate arrayref;
 extern crate secp256k1_test;
-extern crate generic_array; //wtf? the crate is _ and the Cargo.toml is - ??
+extern crate generic_array; 
 
 use rand::ThreadRng;
 use rand::thread_rng;
@@ -17,19 +17,6 @@ use sha2::{Sha256, Digest};
 use byteorder::{BigEndian, ReadBytesExt};
 use std::convert::From;
 use generic_array::GenericArray;
-
-#[derive(Debug, Clone, Eq, PartialEq)]
-//pub enum Error {
-//    InvalidSignature,
-//    InvalidPublicKey,
-//    InvalidSecretKey,
-//    InvalidRecoveryId,
-//    InvalidMessage,
-//    InvalidInputLength,
-//    TweakOutOfRange,
-//}
-
-// define my own error
 
 pub struct SignatureError(String);
 
@@ -42,6 +29,7 @@ pub struct PrivateKey {
     private_key: secp256k1::SecretKey,
 }
 
+#[derive(Debug, PartialEq)]
 pub struct PublicKey {
     public_key: secp256k1::PublicKey,
 }
@@ -59,26 +47,31 @@ pub struct RecoveryId {
 pub struct Error {
     error: secp256k1::Error,
 }
-//
+
 //pub struct TheirMessage {
 //    their_message: secp256k1::Message, // this is a scalar of [u32; 8]
 //}
-//
+
 //impl From<GenericArray<u8>> for TheirMessage {
 //    fn from(input: GenericArray<u8>) -> Self {
 //        TheirMessage{their_message: input}
 //    }
 //}
-//
-//pub fn sha256hash(message: &str) -> TheirMessage {
-//    let mut hasher = Sha256::default();
-//    let byte_message = message.as_bytes();
-//    hasher.input(byte_message);
-//    let output = hasher.result(); //a 32 byte-string literal
-//    let correct_type_output = TheirMessage::from(output);
-//    let their_message = secp256k1::Message::parse(&correct_type_output);
-//    TheirMessage{their_message }
-//}
+
+pub fn sha256hash(message: &str) -> secp256k1::Message {
+    let mut hasher = Sha256::default();
+    let byte_message = message.as_bytes();
+    hasher.input(byte_message);
+    let output = hasher.result(); //a 32 byte-string literal
+    //let correct_type_output = TheirMessage::from(output); //
+    // go to get a use case for the functiion on the RHS
+    let mut their_message_converted = [0u8; 32];
+    for i in 0..32 {
+        their_message_converted[i] = output[i];
+    }
+    secp256k1::Message::parse(&their_message_converted)
+}
+
 
 pub fn new() -> CommonParameters {
     let secp256k1 = secp256k1_test::Secp256k1::new();
@@ -95,23 +88,27 @@ pub fn key_gen(common_parameter: &mut CommonParameters) -> (PublicKey, PrivateKe
     //shorthand for (PublicKey{public_key : public_key}, PrivateKey{private_key : private_key})
 }
 
-pub fn sign(message: &str, private_key: &PrivateKey) -> Signature {
-    let their_message= secp256k1::Message::parse(&[5u8; 32]); //placeholder for now
+pub fn sign(message: &str, private_key: &PrivateKey) -> (Signature, RecoveryId) {
+    //let their_message = secp256k1::Message::parse(&[5u8; 32]); //placeholder for now
+    let their_message = sha256hash(&message);
     let result = secp256k1::sign(
         &their_message, &private_key.private_key);
     match result {
-        Ok((signature, recid)) => Signature{signature }, //similar shorthand
+        Ok((signature, recovery_id)) => (
+            Signature{signature }, RecoveryId{recovery_id }), //similar shorthand
         Err(error_enum) => panic!("signing error"),
     }
 }
 
 pub fn verify(message: &str, signature: &Signature, public_key: &PublicKey) -> bool {
-    let their_message= secp256k1::Message::parse(&[5u8; 32]); //placeholder for now
+    //let their_message= secp256k1::Message::parse(&[5u8; 32]); //placeholder for now
+    let their_message = sha256hash(&message);
     secp256k1::verify(&their_message, &signature.signature, &public_key.public_key)
 }
 
 pub fn recover(message: &str, signature: &Signature, recovery_id: &RecoveryId) -> PublicKey {
-    let their_message= secp256k1::Message::parse(&[5u8; 32]); //placeholder for now
+    //let their_message= secp256k1::Message::parse(&[5u8; 32]); //placeholder for now
+    let their_message = sha256hash(&message);
     let result = secp256k1::recover(
         &their_message, &signature.signature, &recovery_id.recovery_id);
     match result {
