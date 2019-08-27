@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["initialize",""],["key_gen",""],["recover",""],["sha256hash",""],["sign",""],["verify",""]],"struct":[["CommonParameters",""],["Error",""],["PrivateKey",""],["PublicKey",""],["RecoveryId",""],["Signature",""],["SignatureError",""]]});

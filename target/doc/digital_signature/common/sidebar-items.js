@@ -1,0 +1,1 @@
+initSidebarItems({"mod":[["ecdsa","This crate wraps libsecp256k1. The message is a str and we use Sha256 for hashing."]]});

@@ -1,3 +1,60 @@
+//! This crate wraps libsecp256k1. The message is a str and we use Sha256 for hashing.
+//!
+//! # Example
+//!
+//! Creating a signature on a message is simple.
+//!
+//! First, we need to initialise the crate and generate the key-pair which include the public key
+//! and the private key.
+//!
+//! ```
+//! use digital_signature::common::ecdsa::*;
+//! fn main() {
+//! let mut common_parameter = initialize();
+//! let (public_key, private_key) = key_gen(&mut common_parameter);
+//! }
+//! ```
+//!
+//! We can now use the private key to sign our message str.
+//!
+//! ```
+//! # use digital_signature::common::ecdsa::*;
+//! # fn main() {
+//! # let mut common_parameter = initialize();
+//! # let (public_key, private_key) = key_gen(&mut common_parameter);
+//! let message = "hello world";
+//! let (signature, recovery_id) = sign(&message, &private_key).unwrap();
+//! # }
+//! ```
+//!
+//! To verify that the signature is valid for our message, we use the public key.
+//!
+//! ```
+//! # use digital_signature::common::ecdsa::*;
+//! # fn main() {
+//! # let mut common_parameter = initialize();
+//! # let (public_key, private_key) = key_gen(&mut common_parameter);
+//! # let message = "hello world";
+//! # let (signature, recovery_id) = sign(&message, &private_key).unwrap();
+//! assert!(verify(&message, &signature, &public_key));
+//! # }
+//! ```
+//!
+//! Finally, we can recover the public key using the message and the output of the
+//! signing function.
+//!
+//! ```
+//! # use digital_signature::common::ecdsa::*;
+//! # fn main() {
+//! # let mut common_parameter = initialize();
+//! # let (public_key, private_key) = key_gen(&mut common_parameter);
+//! # let message = "hello world";
+//! # let (signature, recovery_id) = sign(&message, &private_key).unwrap();
+//! # assert!(verify(&message, &signature, &public_key));
+//! assert_eq!(recover(&message, &signature, &recovery_id).unwrap(), public_key);
+//! # }
+//! ```
+
 extern crate secp256k1;
 extern crate hmac_drbg;
 extern crate typenum;
@@ -48,6 +105,7 @@ fn to_error(error_enum: secp256k1::Error) -> Error {
     Error(result.to_string())
 }
 
+#[derive(Debug)]
 pub struct Error(String);
 
 pub fn sha256hash(message: &str) -> secp256k1::Message {
@@ -103,26 +161,20 @@ pub fn recover(message: &str, signature: &Signature,
     }
 }
 
-//#[test]
-//fn test_sign_and_verify() {
-//    let mut common_parameter = initialize();
-//    let message = "hello world";
-//    let (public_key, private_key) = key_gen(&mut common_parameter);
-//    //let (signature, recovery_id) = sign(&message, &private_key);
-////    match sign(&message, &private_key) {
-////        Ok((signature, recovery_id)) => Ok(
-////            (Signature{signature}, RecoveryId{recovery_id})),
-////        Err(error_enum) => Err(to_error(error_enum)),
-////    }
-//    assert!(verify(&message, &signature, &public_key));
-//}
-//
-//#[test]
-//fn test_recover_public_key() {
-//    let mut common_parameter = initialize();
-//    let message = "hello world";
-//    let (public_key, private_key) = key_gen(&mut common_parameter);
-//    let (signature, recovery_id) = sign(&message, &private_key);
-//    assert_eq!(recover(&message, &signature, &recovery_id), public_key);
-//}
+#[test]
+fn test_sign_and_verify() {
+    let mut common_parameter = initialize();
+    let message = "hello world";
+    let (public_key, private_key) = key_gen(&mut common_parameter);
+    let (signature, _) = sign(&message, &private_key).unwrap();
+    assert!(verify(&message, &signature, &public_key));
+}
 
+#[test]
+fn test_recover_public_key() {
+    let mut common_parameter = initialize();
+    let message = "hello world";
+    let (public_key, private_key) = key_gen(&mut common_parameter);
+    let (signature, recovery_id) = sign(&message, &private_key).unwrap();
+    assert_eq!(recover(&message, &signature, &recovery_id).unwrap(), public_key);
+}
